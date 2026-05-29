@@ -37,7 +37,16 @@ ADMIN_PASSWORD=your-secure-password npm run dev
 - Selected Works — add/remove items, upload images, edit titles & descriptions
 - Public Projects — same as Selected Works
 
-Uploaded images are saved to `public/uploads/`. All text and image URLs are stored in `data/content.json`.
+Uploaded images and site content are stored in **Vercel Blob** when `BLOB_READ_WRITE_TOKEN` is set (automatic on Vercel after connecting your Blob store). Locally, files fall back to `public/uploads/` and `data/content.json`.
+
+## Deploying on Vercel
+
+1. Push this repo to GitHub and import it in Vercel
+2. Create a **Blob** store (Public) and connect it to the project — Vercel adds `BLOB_READ_WRITE_TOKEN` automatically
+3. Add `ADMIN_PASSWORD` in Vercel → Settings → Environment Variables
+4. Redeploy
+
+After deploy, `/admin` uploads and saves persist in production.
 
 ## Tech stack
 

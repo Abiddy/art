@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
 import { isAuthenticated } from "@/lib/content";
@@ -18,16 +19,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadsDir, { recursive: true });
-
     const ext = path.extname(file.name) || ".jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-    const filepath = path.join(uploadsDir, filename);
 
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(`uploads/${filename}`, file, {
+        access: "public",
+      });
+      return NextResponse.json({ url: blob.url });
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
+    const filepath = path.join(uploadsDir, filename);
     await fs.writeFile(filepath, buffer);
 
     return NextResponse.json({ url: `/uploads/${filename}` });

@@ -26,7 +26,7 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className={`font-serif text-lg font-semibold tracking-wide text-neutral-800 transition-colors hover:text-black md:text-xl ${
+              className={`font-serif text-lg font-medium tracking-wide text-neutral-800 transition-colors hover:text-black md:text-xl ${
                 isActive
                   ? "border-b border-black pb-0.5 text-black"
                   : "border-b border-transparent pb-0.5"
