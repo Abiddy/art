@@ -7,7 +7,7 @@ A minimalist artist portfolio website inspired by [Njideka Akunyili Crosby's sit
 - **Home** — Full-screen hero image with artist name
 - **About** — Portrait + biographical text
 - **Selected Works** — Gallery of artworks with titles and descriptions
-- **Public Projects** — Gallery of public installations
+- **Projects** — Square grid of public installations
 
 ## Getting started
 
@@ -35,7 +35,7 @@ ADMIN_PASSWORD=your-secure-password npm run dev
 - Home hero image and artist name
 - About portrait and bio text
 - Selected Works — add/remove items, upload images, edit titles & descriptions
-- Public Projects — same as Selected Works
+- Projects — same row editor, displayed as square cropped grid
 
 Uploaded images and site content are stored in **Vercel Blob** when `BLOB_READ_WRITE_TOKEN` is set (automatic on Vercel after connecting your Blob store). Locally, files fall back to `public/uploads/` and `data/content.json`.
 

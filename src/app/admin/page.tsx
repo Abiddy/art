@@ -2,9 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import SelectedWorksEditor from "@/components/admin/SelectedWorksEditor";
 import type { GalleryItem, GalleryRow, GallerySection, SiteContent } from "@/lib/types";
 
 const PASSWORD_KEY = "admin-password";
+
+type AdminTab = "home" | "about" | "selectedWorks" | "projects";
+
+const TABS: { id: AdminTab; label: string }[] = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "selectedWorks", label: "Selected Works" },
+  { id: "projects", label: "Projects" },
+];
 
 function ImageUploadField({
   label,
@@ -72,6 +82,7 @@ function emptyItem(): GalleryItem {
     image: "",
     title: "",
     description: "",
+    widthWeight: 1,
   };
 }
 
@@ -154,9 +165,7 @@ function RowGalleryEditor({
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-neutral-900">
-                Row {rowIndex + 1}
-              </span>
+              <span className="text-sm font-medium text-neutral-900">Row {rowIndex + 1}</span>
               <label className="flex items-center gap-2 text-sm text-neutral-600">
                 Images in row:
                 <select
@@ -197,15 +206,11 @@ function RowGalleryEditor({
                   password={password}
                 />
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-neutral-600">
-                    Title
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-neutral-600">Title</label>
                   <input
                     type="text"
                     value={item.title}
-                    onChange={(e) =>
-                      updateItem(rowIndex, itemIndex, "title", e.target.value)
-                    }
+                    onChange={(e) => updateItem(rowIndex, itemIndex, "title", e.target.value)}
                     className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
                   />
                 </div>
@@ -237,9 +242,7 @@ export default function AdminPage() {
   const [content, setContent] = useState<SiteContent | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<
-    "home" | "about" | "selectedWorks" | "publicProjects"
-  >("home");
+  const [activeTab, setActiveTab] = useState<AdminTab>("home");
 
   const loadContent = useCallback(async () => {
     const res = await fetch("/api/content");
@@ -341,21 +344,31 @@ export default function AdminPage() {
     );
   }
 
-  const tabs = [
-    { id: "home" as const, label: "Home" },
-    { id: "about" as const, label: "About" },
-    { id: "selectedWorks" as const, label: "Selected Works" },
-    { id: "publicProjects" as const, label: "Public Projects" },
-  ];
+  const isWideEditor = activeTab === "selectedWorks";
 
   return (
     <div className="min-h-screen bg-neutral-100">
-      <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div>
             <h1 className="font-serif text-xl text-neutral-900">Admin</h1>
-            <p className="text-xs text-neutral-500">Manage site content</p>
           </div>
+          <nav className="flex items-center gap-1">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`rounded-full px-4 py-2 text-sm transition ${
+                  activeTab === tab.id
+                    ? "bg-neutral-900 text-white"
+                    : "text-neutral-600 hover:bg-neutral-50"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
           <div className="flex items-center gap-3">
             <a
               href="/"
@@ -394,27 +407,12 @@ export default function AdminPage() {
         )}
       </header>
 
-      <div className="mx-auto max-w-4xl px-6 py-8">
-        <div className="mb-8 flex flex-wrap gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`rounded-full px-4 py-2 text-sm transition ${
-                activeTab === tab.id
-                  ? "bg-neutral-900 text-white"
-                  : "bg-white text-neutral-600 hover:bg-neutral-50"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-lg bg-white p-8 shadow-sm">
+      <div
+        className={`mx-auto px-6 py-8 ${isWideEditor ? "max-w-6xl" : "max-w-4xl"}`}
+      >
+        <div className={`${isWideEditor ? "" : "rounded-lg bg-white p-8 shadow-sm"}`}>
           {activeTab === "home" && (
-            <div className="space-y-6">
+            <div className="space-y-6 rounded-lg bg-white p-8 shadow-sm">
               <div>
                 <label className="mb-1 block text-sm font-medium text-neutral-600">
                   Artist name
@@ -422,25 +420,21 @@ export default function AdminPage() {
                 <input
                   type="text"
                   value={content.artistName}
-                  onChange={(e) =>
-                    setContent({ ...content, artistName: e.target.value })
-                  }
+                  onChange={(e) => setContent({ ...content, artistName: e.target.value })}
                   className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
                 />
               </div>
               <ImageUploadField
                 label="Hero image"
                 value={content.home.heroImage}
-                onChange={(url) =>
-                  setContent({ ...content, home: { heroImage: url } })
-                }
+                onChange={(url) => setContent({ ...content, home: { heroImage: url } })}
                 password={password}
               />
             </div>
           )}
 
           {activeTab === "about" && (
-            <div className="space-y-6">
+            <div className="space-y-6 rounded-lg bg-white p-8 shadow-sm">
               <ImageUploadField
                 label="Portrait image"
                 value={content.about.image}
@@ -470,21 +464,22 @@ export default function AdminPage() {
           )}
 
           {activeTab === "selectedWorks" && (
-            <RowGalleryEditor
-              title="Selected Works"
+            <SelectedWorksEditor
               section={content.selectedWorks}
               onChange={(selectedWorks) => setContent({ ...content, selectedWorks })}
               password={password}
             />
           )}
 
-          {activeTab === "publicProjects" && (
-            <RowGalleryEditor
-              title="Public Projects"
-              section={content.publicProjects}
-              onChange={(publicProjects) => setContent({ ...content, publicProjects })}
-              password={password}
-            />
+          {activeTab === "projects" && (
+            <div className="rounded-lg bg-white p-8 shadow-sm">
+              <RowGalleryEditor
+                title="Projects"
+                section={content.projects}
+                onChange={(projects) => setContent({ ...content, projects })}
+                password={password}
+              />
+            </div>
           )}
         </div>
       </div>

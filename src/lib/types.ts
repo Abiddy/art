@@ -1,14 +1,20 @@
+import type { ImageAspectRatio } from "./aspect-ratios";
+import { ensureSectionRows } from "./gallery-weights";
+
 export interface GalleryItem {
   id: string;
   image: string;
   title: string;
   description: string;
+  widthWeight?: number;
+  aspectRatio?: ImageAspectRatio;
 }
 
 export interface GalleryRow {
   id: string;
   columns: number;
   items: GalleryItem[];
+  height?: number;
 }
 
 export interface GallerySection {
@@ -25,7 +31,7 @@ export interface SiteContent {
     text: string;
   };
   selectedWorks: GallerySection;
-  publicProjects: GallerySection;
+  projects: GallerySection;
 }
 
 function createItem(id: string, image: string, title: string, description: string): GalleryItem {
@@ -113,26 +119,26 @@ Her practice draws from personal narrative and collective history, weaving toget
       ]),
     ],
   },
-  publicProjects: {
+  projects: {
     rows: [
       createRow("pp-row-1", 3, [
         createItem(
           "pp-1",
           "https://images.unsplash.com/photo-1460661419201-fd41a2058173?w=600&q=80",
-          "Community Mural, Downtown Arts Center",
-          "Permanent installation, 2024"
+          "Mural Arts/PMA",
+          "2025"
         ),
         createItem(
           "pp-2",
           "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80",
-          "Public Library Residency",
-          "Site-specific works on paper, 2023"
+          "MoAD, San Francisco",
+          "2022"
         ),
         createItem(
           "pp-3",
           "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=500&q=80",
-          "City Hall Window Series",
-          "Temporary installation, 2022"
+          "Smart Museum of Art, Chicago",
+          "2021"
         ),
       ]),
     ],
@@ -143,7 +149,7 @@ export function migrateGallerySection(
   section: GallerySection | GalleryItem[]
 ): GallerySection {
   if (!Array.isArray(section)) {
-    return section;
+    return { rows: ensureSectionRows(section.rows) };
   }
 
   if (section.length === 0) {
@@ -160,18 +166,18 @@ export function migrateGallerySection(
     });
   }
 
-  return { rows };
+  return { rows: ensureSectionRows(rows) };
 }
 
 export function normalizeContent(raw: Record<string, unknown>): SiteContent {
-  const content = raw as unknown as SiteContent;
+  const content = raw as unknown as SiteContent & { publicProjects?: GallerySection | GalleryItem[] };
   return {
     ...content,
     selectedWorks: migrateGallerySection(
       content.selectedWorks as GallerySection | GalleryItem[]
     ),
-    publicProjects: migrateGallerySection(
-      content.publicProjects as GallerySection | GalleryItem[]
+    projects: migrateGallerySection(
+      (content.projects ?? content.publicProjects) as GallerySection | GalleryItem[]
     ),
   };
 }
