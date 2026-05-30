@@ -3,6 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import SelectedWorksEditor from "@/components/admin/SelectedWorksEditor";
+import {
+  adminBtnDanger,
+  adminBtnGhost,
+  adminBtnPrimary,
+  adminBtnSecondary,
+  adminBtnTab,
+  adminBtnTabActive,
+  adminBtnTabInactive,
+  adminInput,
+} from "@/components/admin/admin-styles";
 import type { GalleryItem, GalleryRow, GallerySection, SiteContent } from "@/lib/types";
 
 const PASSWORD_KEY = "admin-password";
@@ -60,7 +70,7 @@ function ImageUploadField({
         </div>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="cursor-pointer rounded border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-50">
+        <label className={`cursor-pointer ${adminBtnSecondary}`}>
           {uploading ? "Uploading…" : "Upload image"}
           <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
         </label>
@@ -69,7 +79,7 @@ function ImageUploadField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Or paste image URL"
-          className="min-w-0 flex-1 rounded border border-neutral-300 px-3 py-2 text-sm text-neutral-800"
+          className={`min-w-0 flex-1 ${adminInput}`}
         />
       </div>
     </div>
@@ -148,14 +158,14 @@ function RowGalleryEditor({
         <button
           type="button"
           onClick={addRow}
-          className="rounded border border-neutral-300 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
+          className={adminBtnPrimary}
         >
           + Add row
         </button>
       </div>
 
       {section.rows.length === 0 && (
-        <p className="text-sm text-neutral-500">No rows yet. Add a row to get started.</p>
+        <p className="text-sm font-medium text-neutral-600">No rows yet. Add a row to get started.</p>
       )}
 
       {section.rows.map((row, rowIndex) => (
@@ -171,7 +181,7 @@ function RowGalleryEditor({
                 <select
                   value={row.columns}
                   onChange={(e) => setColumns(rowIndex, Number(e.target.value))}
-                  className="rounded border border-neutral-300 px-2 py-1 text-sm"
+                  className="rounded border border-neutral-300 px-2 py-1.5 text-sm font-medium"
                 >
                   {[1, 2, 3, 4].map((n) => (
                     <option key={n} value={n}>
@@ -184,7 +194,7 @@ function RowGalleryEditor({
             <button
               type="button"
               onClick={() => removeRow(rowIndex)}
-              className="text-sm text-red-600 hover:text-red-800"
+              className={adminBtnDanger}
             >
               Remove row
             </button>
@@ -206,16 +216,16 @@ function RowGalleryEditor({
                   password={password}
                 />
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-neutral-600">Title</label>
+                  <label className="mb-1 block text-sm font-semibold text-neutral-700">Title</label>
                   <input
                     type="text"
                     value={item.title}
                     onChange={(e) => updateItem(rowIndex, itemIndex, "title", e.target.value)}
-                    className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+                    className={adminInput}
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-neutral-600">
+                  <label className="mb-1 block text-sm font-semibold text-neutral-700">
                     Description
                   </label>
                   <input
@@ -224,7 +234,7 @@ function RowGalleryEditor({
                     onChange={(e) =>
                       updateItem(rowIndex, itemIndex, "description", e.target.value)
                     }
-                    className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+                    className={adminInput}
                   />
                 </div>
               </div>
@@ -311,7 +321,7 @@ export default function AdminPage() {
           className="w-full max-w-sm space-y-6 rounded-lg bg-white p-8 shadow-sm"
         >
           <div>
-            <h1 className="font-serif text-2xl text-neutral-900">Admin</h1>
+            <h1 className="text-xl font-bold text-neutral-900">Admin</h1>
             <p className="mt-1 text-sm text-neutral-500">Anam Siddiqui Portfolio</p>
           </div>
           <div>
@@ -320,14 +330,14 @@ export default function AdminPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+              className={adminInput}
               autoFocus
             />
           </div>
           {message && <p className="text-sm text-red-600">{message}</p>}
           <button
             type="submit"
-            className="w-full rounded bg-neutral-900 py-2.5 text-sm text-white hover:bg-neutral-800"
+            className={`w-full ${adminBtnPrimary}`}
           >
             Sign in
           </button>
@@ -351,7 +361,7 @@ export default function AdminPage() {
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div>
-            <h1 className="font-serif text-xl text-neutral-900">Admin</h1>
+            <h1 className="text-lg font-bold text-neutral-900">Admin</h1>
           </div>
           <nav className="flex items-center gap-1">
             {TABS.map((tab) => (
@@ -359,21 +369,19 @@ export default function AdminPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`rounded-full px-4 py-2 text-sm transition ${
-                  activeTab === tab.id
-                    ? "bg-neutral-900 text-white"
-                    : "text-neutral-600 hover:bg-neutral-50"
+                className={`${adminBtnTab} ${
+                  activeTab === tab.id ? adminBtnTabActive : adminBtnTabInactive
                 }`}
               >
                 {tab.label}
               </button>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <a
               href="/"
               target="_blank"
-              className="text-sm text-neutral-600 hover:text-neutral-900"
+              className={`${adminBtnGhost} no-underline`}
             >
               View site ↗
             </a>
@@ -381,15 +389,11 @@ export default function AdminPage() {
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="rounded bg-neutral-900 px-5 py-2 text-sm text-white hover:bg-neutral-800 disabled:opacity-50"
+              className={adminBtnPrimary}
             >
               {saving ? "Saving…" : "Save changes"}
             </button>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="text-sm text-neutral-500 hover:text-neutral-800"
-            >
+            <button type="button" onClick={handleLogout} className={adminBtnGhost}>
               Logout
             </button>
           </div>
@@ -421,7 +425,7 @@ export default function AdminPage() {
                   type="text"
                   value={content.artistName}
                   onChange={(e) => setContent({ ...content, artistName: e.target.value })}
-                  className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+                  className={adminInput}
                 />
               </div>
               <ImageUploadField
@@ -444,7 +448,7 @@ export default function AdminPage() {
                 password={password}
               />
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-600">
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">
                   About text
                 </label>
                 <textarea
@@ -456,7 +460,7 @@ export default function AdminPage() {
                     })
                   }
                   rows={10}
-                  className="w-full rounded border border-neutral-300 px-3 py-2 text-sm leading-relaxed"
+                  className={adminInput}
                   placeholder="Separate paragraphs with a blank line"
                 />
               </div>

@@ -4,6 +4,14 @@ import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import { GalleryRowView } from "@/components/GalleryRowView";
 import {
+  adminBtnDashed,
+  adminBtnDanger,
+  adminBtnGhost,
+  adminBtnPrimary,
+  adminBtnSecondary,
+  adminInput,
+} from "@/components/admin/admin-styles";
+import {
   applyWeightsToRow,
   DEFAULT_ROW_HEIGHT,
   ensureSectionRows,
@@ -63,7 +71,7 @@ function ImageUploadField({
         </div>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="cursor-pointer rounded border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">
+        <label className={`cursor-pointer ${adminBtnSecondary}`}>
           {uploading ? "Uploading…" : "Upload image"}
           <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
         </label>
@@ -72,7 +80,7 @@ function ImageUploadField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Or paste image URL"
-          className="min-w-0 flex-1 rounded border border-neutral-300 px-3 py-2 text-sm"
+          className={`min-w-0 flex-1 ${adminInput}`}
         />
       </div>
     </div>
@@ -211,14 +219,10 @@ export default function SelectedWorksEditor({
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-neutral-500">
-          Drag the edges between images to resize. Images in each row always fill the width.
+        <p className="text-sm font-medium text-neutral-600">
+          Drag the handles between images to resize width. Each row always fills the screen.
         </p>
-        <button
-          type="button"
-          onClick={addRow}
-          className="rounded border border-neutral-300 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
-        >
+        <button type="button" onClick={addRow} className={adminBtnPrimary}>
           + Add row
         </button>
       </div>
@@ -226,11 +230,7 @@ export default function SelectedWorksEditor({
       {rows.length === 0 && (
         <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center">
           <p className="text-sm text-neutral-500">No rows yet.</p>
-          <button
-            type="button"
-            onClick={addRow}
-            className="mt-4 rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-800"
-          >
+          <button type="button" onClick={addRow} className={`mt-4 ${adminBtnPrimary}`}>
             + Add row
           </button>
         </div>
@@ -239,13 +239,13 @@ export default function SelectedWorksEditor({
       {rows.map((row, rowIndex) => (
         <div key={row.id} className="group space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
               Row {rowIndex + 1}
             </span>
             <button
               type="button"
               onClick={() => removeRow(rowIndex)}
-              className="text-xs text-red-600 hover:text-red-800"
+              className={adminBtnDanger}
             >
               Remove row
             </button>
@@ -267,7 +267,7 @@ export default function SelectedWorksEditor({
             <button
               type="button"
               onClick={() => addImageToRow(rowIndex)}
-              className="rounded border border-dashed border-neutral-300 px-4 py-2 text-sm text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+              className={adminBtnDashed}
             >
               + Image
             </button>
@@ -276,21 +276,21 @@ export default function SelectedWorksEditor({
       ))}
 
       {selection && (
-        <div className="sticky bottom-4 rounded-lg border border-neutral-200 bg-white p-6 shadow-lg">
+        <div className="sticky bottom-4 rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-medium text-neutral-900">Edit image</h3>
-            <div className="flex items-center gap-3">
+            <h3 className="text-base font-semibold text-neutral-900">Edit image</h3>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setSelectedItemId(null)}
-                className="text-sm text-neutral-500 hover:text-neutral-800"
+                className={adminBtnGhost}
               >
                 Close
               </button>
               <button
                 type="button"
                 onClick={removeSelectedItem}
-                className="text-sm text-red-600 hover:text-red-800"
+                className={adminBtnDanger}
               >
                 Remove
               </button>
@@ -304,25 +304,25 @@ export default function SelectedWorksEditor({
             />
             <div className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-600">
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">
                   Title
                 </label>
                 <input
                   type="text"
                   value={selection.item.title}
                   onChange={(e) => updateSelectedItem("title", e.target.value)}
-                  className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+                  className={adminInput}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-600">
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">
                   Description
                 </label>
                 <input
                   type="text"
                   value={selection.item.description}
                   onChange={(e) => updateSelectedItem("description", e.target.value)}
-                  className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+                  className={adminInput}
                 />
               </div>
             </div>

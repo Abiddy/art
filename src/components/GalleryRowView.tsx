@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { DEFAULT_ROW_HEIGHT, gridTemplateColumns } from "@/lib/gallery-weights";
+import { Fragment } from "react";
+import { DEFAULT_ROW_HEIGHT } from "@/lib/gallery-weights";
 import type { GalleryItem, GalleryRow } from "@/lib/types";
 
 interface GalleryRowViewProps {
@@ -11,6 +12,37 @@ interface GalleryRowViewProps {
     leftIndex: number,
     event: React.PointerEvent<HTMLDivElement>
   ) => void;
+}
+
+function ResizeHandle({
+  leftIndex,
+  onPointerDown,
+}: {
+  leftIndex: number;
+  onPointerDown?: (
+    leftIndex: number,
+    event: React.PointerEvent<HTMLDivElement>
+  ) => void;
+}) {
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Drag to resize"
+      title="Drag to resize"
+      className="group/handle flex w-4 shrink-0 cursor-col-resize touch-none items-center justify-center self-stretch"
+      onPointerDown={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onPointerDown?.(leftIndex, event);
+      }}
+    >
+      <div className="flex h-14 items-center gap-[2px] rounded-full border border-neutral-200/90 bg-white/90 px-[5px] py-2 shadow-[0_1px_3px_rgba(0,0,0,0.06)] backdrop-blur-sm transition hover:border-neutral-300 hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)]">
+        <span className="h-8 w-px rounded-full bg-neutral-300 transition group-hover/handle:bg-neutral-500" />
+        <span className="h-8 w-px rounded-full bg-neutral-300 transition group-hover/handle:bg-neutral-500" />
+      </div>
+    </div>
+  );
 }
 
 function GalleryCell({
@@ -29,7 +61,7 @@ function GalleryCell({
   return (
     <figure
       className={`min-w-0 ${editable ? "cursor-pointer" : ""} ${
-        selected ? "ring-2 ring-neutral-900 ring-offset-2" : ""
+        selected ? "rounded ring-2 ring-neutral-900 ring-offset-2" : ""
       }`}
       onClick={editable ? onSelect : undefined}
     >
@@ -43,19 +75,19 @@ function GalleryCell({
             alt={item.title || "Artwork"}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, 33vw"
             draggable={false}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-neutral-400">
+          <div className="flex h-full items-center justify-center text-sm font-medium text-neutral-400">
             {editable ? "Click to add image" : ""}
           </div>
         )}
       </div>
-      <figcaption className="mt-2 font-serif">
+      <figcaption className={`mt-2 ${editable ? "font-sans" : "font-serif"}`}>
         {item.title && (
           <p className="text-xs leading-snug text-neutral-900 md:text-sm">
-            <em>{item.title}</em>
+            {editable ? item.title : <em>{item.title}</em>}
           </p>
         )}
         {item.description && (
@@ -77,31 +109,44 @@ export function GalleryRowView({
 }: GalleryRowViewProps) {
   const height = row.height ?? DEFAULT_ROW_HEIGHT;
 
-  return (
-    <div
-      className="grid w-full gap-3 md:gap-4"
-      style={{ gridTemplateColumns: gridTemplateColumns(row.items) }}
-    >
-      {row.items.map((item, index) => (
-        <div key={item.id} className="relative min-w-0">
-          <GalleryCell
-            item={item}
-            height={height}
-            editable={editable}
-            selected={selectedItemId === item.id}
-            onSelect={() => onSelectItem?.(item.id)}
-          />
-          {editable && index < row.items.length - 1 && (
+  if (editable) {
+    return (
+      <div className="flex w-full items-start">
+        {row.items.map((item, index) => (
+          <Fragment key={item.id}>
             <div
-              role="separator"
-              aria-orientation="vertical"
-              aria-label="Resize image"
-              className="absolute -right-2 top-0 z-10 flex h-full w-4 cursor-col-resize items-center justify-center touch-none"
-              onPointerDown={(event) => onResizeHandlePointerDown?.(index, event)}
+              className="min-w-0"
+              style={{ flex: `${item.widthWeight ?? 1} 1 0%` }}
             >
-              <div className="h-12 w-1 rounded-full bg-neutral-900/30 transition group-hover:bg-neutral-900/50" />
+              <GalleryCell
+                item={item}
+                height={height}
+                editable
+                selected={selectedItemId === item.id}
+                onSelect={() => onSelectItem?.(item.id)}
+              />
             </div>
-          )}
+            {index < row.items.length - 1 && (
+              <ResizeHandle
+                leftIndex={index}
+                onPointerDown={onResizeHandlePointerDown}
+              />
+            )}
+          </Fragment>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full items-start gap-3 md:gap-4">
+      {row.items.map((item) => (
+        <div
+          key={item.id}
+          className="min-w-0"
+          style={{ flex: `${item.widthWeight ?? 1} 1 0%` }}
+        >
+          <GalleryCell item={item} height={height} />
         </div>
       ))}
     </div>

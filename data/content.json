@@ -7,32 +7,59 @@
     "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&q=80",
     "text": "Anam Siddiqui is a visual artist whose work explores memory, identity, and the quiet spaces between cultures. Working across painting, collage, and mixed media, she creates layered compositions that invite viewers to linger in the details.\n\nHer practice draws from personal narrative and collective history, weaving together fragments of everyday life with broader questions of belonging. She has exhibited in group and solo shows, and her work is held in private collections internationally."
   },
-  "selectedWorks": [
-    {
-      "id": "sw-1",
-      "image": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80",
-      "title": "Interior Garden",
-      "description": "Oil and acrylic on canvas, 48 × 36 in, 2024"
-    },
-    {
-      "id": "sw-2",
-      "image": "https://images.unsplash.com/photo-1547891654-e966ed978897?w=800&q=80",
-      "title": "Evening Light",
-      "description": "Mixed media on paper, 30 × 22 in, 2023"
-    },
-    {
-      "id": "sw-3",
-      "image": "https://images.unsplash.com/photo-1515406539379-6c4f0c4e8b0e?w=800&q=80",
-      "title": "Still Life with Vessels",
-      "description": "Oil on linen, 24 × 20 in, 2023"
-    },
-    {
-      "id": "sw-4",
-      "image": "https://images.unsplash.com/photo-1499781350181-c7520a4fd934?w=800&q=80",
-      "title": "Blue Hour",
-      "description": "Acrylic on canvas, 40 × 32 in, 2022"
-    }
-  ],
+  "selectedWorks": {
+    "rows": [
+      {
+        "id": "row-0",
+        "columns": 3,
+        "items": [
+          {
+            "id": "sw-1",
+            "image": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80",
+            "title": "Interior Garden",
+            "description": "Oil and acrylic on canvas, 48 × 36 in, 2024",
+            "widthWeight": 1
+          },
+          {
+            "id": "sw-2",
+            "image": "/uploads/1780120094814-x7ez3k6v1ei.jpg",
+            "title": "Evening Light",
+            "description": "Mixed media on paper, 30 × 22 in, 2023",
+            "widthWeight": 1.3429220448369565
+          },
+          {
+            "id": "item-1780120101705-1frl98tlaau",
+            "image": "/uploads/1780120109355-aenc33dd6s.jpg",
+            "title": "",
+            "description": "",
+            "widthWeight": 0.6570779551630435
+          }
+        ],
+        "height": 280
+      },
+      {
+        "id": "row-2",
+        "columns": 2,
+        "items": [
+          {
+            "id": "sw-3",
+            "image": "https://images.unsplash.com/photo-1515406539379-6c4f0c4e8b0e?w=800&q=80",
+            "title": "Still Life with Vessels",
+            "description": "Oil on linen, 24 × 20 in, 2023",
+            "widthWeight": 1
+          },
+          {
+            "id": "sw-4",
+            "image": "https://images.unsplash.com/photo-1499781350181-c7520a4fd934?w=800&q=80",
+            "title": "Blue Hour",
+            "description": "Acrylic on canvas, 40 × 32 in, 2022",
+            "widthWeight": 1
+          }
+        ],
+        "height": 280
+      }
+    ]
+  },
   "publicProjects": [
     {
       "id": "pp-1",
@@ -52,5 +79,44 @@
       "title": "City Hall Window Series",
       "description": "Temporary installation, 2022"
     }
-  ]
+  ],
+  "projects": {
+    "rows": [
+      {
+        "id": "row-0",
+        "columns": 2,
+        "items": [
+          {
+            "id": "pp-1",
+            "image": "https://images.unsplash.com/photo-1460661419201-fd41a2058173?w=800&q=80",
+            "title": "Community Mural, Downtown Arts Center",
+            "description": "Permanent installation, 2024",
+            "widthWeight": 1
+          },
+          {
+            "id": "pp-2",
+            "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+            "title": "Public Library Residency",
+            "description": "Site-specific works on paper, 2023",
+            "widthWeight": 1
+          }
+        ],
+        "height": 280
+      },
+      {
+        "id": "row-2",
+        "columns": 1,
+        "items": [
+          {
+            "id": "pp-3",
+            "image": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&q=80",
+            "title": "City Hall Window Series",
+            "description": "Temporary installation, 2022",
+            "widthWeight": 1
+          }
+        ],
+        "height": 280
+      }
+    ]
+  }
 }
